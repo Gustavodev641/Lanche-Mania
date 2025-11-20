@@ -1,0 +1,93 @@
+
+.stock-control {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+    width: 100%;
+}
+
+.stock-control h2 {
+    color: var(--color-neutral-1);
+    margin-bottom: 1.5rem;
+    font-size: 1.8rem;
+}
+
+
+.stock-table {
+    overflow-x: auto; 
+}
+
+.stock-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.stock-table th,
+.stock-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--color-neutral-3, #e0e0e0);
+    white-space: nowrap; 
+}
+
+.stock-table th {
+    background: #f8f9fa;
+    font-weight: 600;
+    color: var(--color-neutral-1);
+}
+
+
+.stock-status {
+    font-weight: bold;
+    padding: 0.3rem 0.8rem;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.stock-status.in-stock {
+ 
+    background: #d4edda;
+    color: #155724;
+}
+
+.stock-status.low-stock {
+  
+    background: #fff3cd;
+    color: #856404;
+}
+
+.stock-status.out-of-stock {
+
+    background: #f8d7da;
+    color: #721c24;
+}
+/* Botões de Ação na Tabela */
+.btn-edit, .btn-delete {
+    padding: 0.5rem 0.8rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    margin-right: 5px;
+    transition: background 0.2s;
+}
+
+.btn-edit {
+    background: #17a2b8; /* Azul */
+    color: white;
+}
+
+.btn-edit:hover {
+    background: #138496;
+}
+
+.btn-delete {
+    background: #dc3545; /* Vermelho */
+    color: white;
+}
+
+.btn-delete:hover {
+    background: #c82333;
+}

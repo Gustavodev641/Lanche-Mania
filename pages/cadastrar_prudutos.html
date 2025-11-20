@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Produto Admin</title>
+    <link rel="stylesheet" href="../css/cadastro_produtos.css">
+    
+    </head>
+<body>
+
+<section id="admin-section">
+    <div class="admin-container">
+        
+        <div class="card">
+            <h2>Cadastro de Produto</h2>
+
+            <label for="produtoTitulo">Nome do Produto</label>
+            <input type="text" id="produtoTitulo" placeholder="Ex: X-Burguer">
+
+            <label for="produtoPreco">Preço</label>
+            <input type="number" id="produtoPreco" placeholder="Ex: 19.90" step="0.01" min="0"> 
+            
+            <label for="produtoQuantidade">Quantidade</label>
+            <input type="number" id="produtoQuantidade" placeholder="Ex: 50" min="0"> 
+
+            <label for="produtoImg">URL da Imagem</label>
+            <input type="text" id="produtoImg" placeholder="Cole o link da imagem">
+
+            <button id="btnCadastrar">Cadastrar Produto</button>
+            
+        </div>
+        
+    </div>
+</section>
+
+<script src="../js/cadastrar_produto.js"></script>
+</body>
+</html>
