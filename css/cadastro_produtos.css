@@ -1,49 +1,64 @@
+/*
+  =====================================
+  1. DEFINIÇÃO DAS VARIÁVEIS DE COR (PADRÃO ADMIN)
+  =====================================
+*/
 :root {
-
-    --color-primary-1: #f4f7f6; 
-    --color-primary-6: #4CAF50; 
-    --color-primary-7: #388E3C; 
+    /* Cores Primárias */
+    --color-primary-1: #f4f7f6; /* Fundo principal */
+    --color-primary-6: #4CAF50; /* Verde Principal (usado em botões/ícones) */
+    --color-primary-7: #388E3C; /* Verde Escuro (usado em hover) */
     
     /* Cores Neutras */
-    --color-neutral-1: #333; 
-    --color-neutral-3: #e0e0e0;
-    --color-neutral-5: #666;
+    --color-neutral-1: #333; /* Texto principal escuro */
+    --color-neutral-3: #e0e0e0; /* Borda/Divisória */
+    --color-neutral-5: #666; /* Texto secundário */
 }
 
-
+/*
+  =====================================
+  2. ESTILOS DO LAYOUT ADMINISTRATIVO PARA O CADASTRO
+  =====================================
+*/
 #admin-section {
     padding: 2rem 1rem;
     background-color: var(--color-primary-1);
-    min-height: calc(100vh - 91px); 
+    min-height: calc(100vh - 91px); /* Mantém a altura mínima da sua base */
 }
 
 .admin-container {
     max-width: 1200px;
     margin: 0 auto;
-
+    /* Adicionamos o display flex para centralizar o card dentro deste container */
     display: flex;
     justify-content: center;
-    align-items: flex-start; 
+    align-items: flex-start; /* Alinha no topo do container */
 }
 
 
-
+/*
+  =====================================
+  3. ESTILOS DO CARD DE CADASTRO
+  =====================================
+*/
 .card {
+    /* Estilos do card base */
     width: 100%;
-    max-width: 400px;
+    max-width: 400px; /* Tamanho do seu card original */
     padding: 30px;
     background: white;
-    border-radius: 15px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
- 
+    border-radius: 15px; /* Padrão do Admin */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Padrão do Admin */
+    
+    /* Resetando os estilos inline para usar o CSS */
     display: flex;
     flex-direction: column;
-    gap: 15px; 
+    gap: 15px; /* Espaçamento entre os elementos */
     font-family: Arial, sans-serif;
     box-sizing: border-box; 
 }
 
-
+/* Título do Formulário */
 .card h2 {
     color: var(--color-neutral-1); 
     font-size: 1.8rem;
@@ -51,7 +66,7 @@
     text-align: center;
 }
 
-
+/* Labels dos campos */
 .card label {
     font-weight: 600;
     color: var(--color-neutral-1);
@@ -59,11 +74,11 @@
     font-size: 0.95rem;
 }
 
-
+/* Estilo para todos os campos de input */
 .card input {
     padding: 12px;
-    border: 1px solid var(--color-neutral-3); 
-    border-radius: 8px; 
+    border: 1px solid var(--color-neutral-3); /* Borda padrão mais sutil */
+    border-radius: 8px; /* Padrão do Admin */
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
     width: 100%;
     box-sizing: border-box;
@@ -80,7 +95,11 @@
     outline: none;
 }
 
-
+/*
+  =====================================
+  4. ESTILOS DO BOTÃO (PADRÃO ADMIN)
+  =====================================
+*/
 .card #btnCadastrar {
     margin-top: 15px;
     padding: 12px;

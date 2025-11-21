@@ -14,6 +14,42 @@
             margin: 0;
             padding: 20px;
         }
+        /* Seu arquivo CSS ou bloco <style> */
+
+table {
+    width: 100%;
+    table-layout: fixed; /* Isso garante que a largura fixa funcione */
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+/* Define a largura das colunas */
+#tabelaClientes thead tr th:nth-child(1) { /* Coluna ID */
+    width: 5%;
+}
+
+#tabelaClientes thead tr th:nth-child(2) { /* Coluna Nome */
+    width: 20%; /* Aumenta a largura para nomes */
+}
+
+#tabelaClientes thead tr th:nth-child(3) { /* Coluna CPF */
+    width: 15%;
+}
+
+#tabelaClientes thead tr th:nth-child(4) { /* Coluna Telefone */
+    width: 15%;
+}
+
+#tabelaClientes thead tr th:nth-child(5) { /* Coluna Endereço/Email (última coluna) */
+    /* Deixa o restante do espaço para o Endereço/Email */
+    width: 45%; 
+    /* Ou, se a soma for 100%, use 'auto' */
+}
+
+/* Opcional: Adicionar quebra de linha forçada para endereços longos */
+td {
+    word-wrap: break-word; 
+}
 
         .container {
             max-width: 1100px;
@@ -87,6 +123,46 @@
             color: #666;
             font-size: 18px;
         }
+
+        /* Adicione este CSS */
+        tr {
+            /* Garante que as linhas da tabela sejam clicáveis */
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        tr.selected {
+            background-color: #fcebeb !important;
+            /* Fundo vermelho claro para seleção */
+            border-left: 4px solid #dc3545;
+        }
+
+        .btn-delete-row {
+            display: inline-block;
+            float: right;
+            /* Alinha à direita */
+            margin-top: 20px;
+            padding: 12px 24px;
+            background: #dc3545;
+            /* Vermelho */
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-delete-row:hover:not(:disabled) {
+            background: #c82333;
+            /* Vermelho mais escuro no hover */
+        }
+
+        .btn-delete-row:disabled {
+            background: #aaa;
+            /* Cinza quando desabilitado */
+            cursor: not-allowed;
+        }
     </style>
 </head>
 
@@ -106,7 +182,7 @@
                     <th>Nome</th>
                     <th>CPF</th>
                     <th>Telefone</th>
-                    <th>Endereço</th>
+                    <th>Email</th>
                 </tr>
             </thead>
             <tbody id="corpoTabela">
@@ -121,8 +197,12 @@
         <a href="admin-painel.html" class="btn-voltar">
             <i class="fa-solid fa-arrow-left"></i> Voltar ao Painel
         </a>
+        <button class="btn-delete-row" id="btnDeletarCliente" disabled>
+            <i class="fa-solid fa-trash-can"></i> Deletar Cliente Selecionado
+        </button>
     </div>
-    <script src="../js/clientes.js"></script>
+
+   <script src="../js/clientes.js"></script>
 </body>
 
 </html>

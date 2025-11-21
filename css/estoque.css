@@ -1,4 +1,4 @@
-
+/* Container principal da tabela de estoque */
 .stock-control {
     background: white;
     padding: 1.5rem;
@@ -14,9 +14,9 @@
     font-size: 1.8rem;
 }
 
-
+/* Estilos da Tabela de Estoque */
 .stock-table {
-    overflow-x: auto; 
+    overflow-x: auto; /* Permite rolar em telas pequenas */
 }
 
 .stock-table table {
@@ -29,7 +29,7 @@
     padding: 1rem;
     text-align: left;
     border-bottom: 1px solid var(--color-neutral-3, #e0e0e0);
-    white-space: nowrap; 
+    white-space: nowrap; /* Evita que o conteúdo da célula quebre */
 }
 
 .stock-table th {
@@ -38,7 +38,7 @@
     color: var(--color-neutral-1);
 }
 
-
+/* Indicadores de Status do Estoque */
 .stock-status {
     font-weight: bold;
     padding: 0.3rem 0.8rem;
@@ -47,22 +47,23 @@
 }
 
 .stock-status.in-stock {
- 
+    /* Ex: Verde claro */
     background: #d4edda;
     color: #155724;
 }
 
 .stock-status.low-stock {
-  
+    /* Ex: Amarelo (Alerta) */
     background: #fff3cd;
     color: #856404;
 }
 
 .stock-status.out-of-stock {
-
+    /* Ex: Vermelho (Perigo) */
     background: #f8d7da;
     color: #721c24;
 }
+
 /* Botões de Ação na Tabela */
 .btn-edit, .btn-delete {
     padding: 0.5rem 0.8rem;

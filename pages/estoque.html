@@ -1,56 +1,81 @@
-<section id="admin-section">
-    <div class="admin-container">
-    
-        <link rel="stylesheet" href="../css/estoque.css">
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciar Estoque - Lanche Mania Admin</title>
+    <link rel="stylesheet" href="../css/admin-painel.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body { background: #f8f9fa; font-family: Arial; margin: 0; padding: 20px; }
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        h2 { text-align: center; color: #f9b000; margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th { background: #f9b000; color: white; padding: 12px; }
+        td { padding: 12px; text-align: center; border-bottom: 1px solid #eee; }
+        tr:hover { background: #fff8e1; }
+        tr.selected { background: #ffeb99 !important; font-weight: bold; }
+        .btn { padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        .btn-delete { background: #e74c3c; color: white; }
+        .btn-delete:disabled { background: #95a5a6; cursor: not-allowed; }
+        .btn-voltar { background: #f9b000; color: white; text-decoration: none; display: inline-block; margin-top: 20px; }
+        .search-bar { margin: 20px 0; text-align: right; }
+        .search-bar input { padding: 10px; width: 300px; border: 1px solid #ddd; border-radius: 8px; }
+    </style>
+</head>
+<body>
 
-        <div class="stock-control">
-            <h2>Gerenciamento de Estoque</h2>
+<div class="container">
+    <h2>Gerenciar Estoque</h2>
 
-            <div class="stock-table">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Produto</th>
-                            <th>Estoque Atual</th>
-                            <th>Preço (R$)</th>
-                            <th>Última Atualização</th>
-                            <th>Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>X-Burguer</td>
-                            <td class="stock-status in-stock">50</td> 
-                            <td>19.90</td>
-                            <td>20/11/2025</td>
-                            <td>
-                                <button class="btn-edit">Editar</button>
-                                <button class="btn-delete">Excluir</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Coca-Cola Lata</td>
-                            <td class="stock-status low-stock">5</td> 
-                            <td>6.00</td>
-                            <td>20/11/2025</td>
-                            <td>
-                                <button class="btn-edit">Editar</button>
-                                <button class="btn-delete">Excluir</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Batata Frita</td>
-                            <td class="stock-status out-of-stock">0</td> 
-                            <td>12.50</td>
-                            <td>18/11/2025</td>
-                            <td>
-                                <button class="btn-edit">Editar</button>
-                                <button class="btn-delete">Excluir</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            </div>
+    <div class="search-bar">
+        <input type="text" id="busca" placeholder="Buscar produto...">
     </div>
-</section>
+
+    <table id="tabelaEstoque">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Título</th>
+                <th>Preço</th>
+                <th>Estoque (Qtde)</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody id="corpoTabela">
+            <!-- Produtos aparecem aqui -->
+        </tbody>
+    </table>
+
+    <button id="btnDeletar" class="btn btn-delete" disabled>Excluir Produto</button>
+    <a href="admin-painel.html" class="btn btn-voltar">Voltar ao Painel</a>
+</div>
+
+<!-- CSS dos botões + e − -->
+<style>
+    .btn-qtde {
+        width: 36px; height: 36px; border: none; border-radius: 50%;
+        font-size: 20px; font-weight: bold; cursor: pointer;
+        transition: all 0.2s;
+    }
+    .btn-qtde.menos { background: #e74c3c; color: white; }
+    .btn-qtde.mais  { background: #27ae60; color: white; }
+    .btn-qtde:hover { transform: scale(1.15); }
+    .zero { color: #e74c3c; font-weight: bold; }
+    .positivo { color: #27ae60; }
+    tr.selected { background: #fff3cd !important; }
+    #btnDeletar { padding: 12px 24px; font-size: 16px; margin-right: 10px; }
+</style>
+
+<!-- Arquivo JS externo -->
+<script src="../js/estoque.js"></script>
+
+</body>
+</html>
