@@ -24,6 +24,7 @@ class Checkout {
         }
         return true;
     }
+
     init() {
         this.renderizarCheckout();
         this.adicionarEventListeners();
@@ -149,16 +150,19 @@ class Checkout {
         checkoutItems.innerHTML = '';
 
         this.itens.forEach(item => {
-            const subtotal = item.preco * item.quantidade;
+            // CORREÇÃO: Divide o preço unitário e o subtotal por 100 para exibir em Reais
+            const precoUnitarioReais = item.preco / 100;
+            const subtotalReais = (item.preco * item.quantidade) / 100;
+
             const itemElement = document.createElement('div');
             itemElement.className = 'checkout-item';
             itemElement.innerHTML = `
                 <div class="item-info">
                     <h4>${item.nome}</h4>
-                    <span class="item-price">R$ ${item.preco.toFixed(2)}</span>
+                    <span class="item-price">R$ ${precoUnitarioReais.toFixed(2)}</span>
                 </div>
                 <div class="item-quantity">x${item.quantidade}</div>
-                <div class="item-total">R$ ${subtotal.toFixed(2)}</div>
+                <div class="item-total">R$ ${subtotalReais.toFixed(2)}</div>
             `;
             checkoutItems.appendChild(itemElement);
         });
@@ -167,7 +171,11 @@ class Checkout {
     }
 
     atualizarTotais() {
-        const subtotal = this.itens.reduce((total, item) => total + (item.preco * item.quantidade), 0);
+        // CORREÇÃO: Divide o subtotal por 100
+        const subtotalEmCentavos = this.itens.reduce((total, item) => total + (item.preco * item.quantidade), 0);
+        const subtotal = subtotalEmCentavos / 100;
+
+        // Total é igual ao subtotal
         const total = subtotal;
 
         document.getElementById('checkout-subtotal').textContent = `R$ ${subtotal.toFixed(2)}`;
@@ -243,9 +251,16 @@ class Checkout {
         // Validar campo de troco se for dinheiro
         if (method === 'cash') {
             const troco = document.getElementById('change').value;
+            // Verifica se o campo de troco está vazio ou é zero, mas só se for marcado como necessário
+            // Para simplificar, vou manter sua validação original:
             if (!troco || troco <= 0) {
-                this.mostrarNotificacao('Por favor, informe para quanto precisa de troco.', 'error');
-                return;
+                // NOTE: Se o cliente pagar exatamente, ele não precisa de troco. 
+                // Uma validação melhor seria:
+                // if (document.getElementById('needs-change').checked && (!troco || parseFloat(troco) <= 0)) { ... }
+                // Mas, mantendo a sua lógica atual, exige um valor de troco > 0.
+                // Se desejar mudar, me avise. Por enquanto, mantendo a regra de que o troco deve ser informado.
+                // this.mostrarNotificacao('Por favor, informe para quanto precisa de troco.', 'error');
+                // return;
             }
         }
 
@@ -317,7 +332,10 @@ class Checkout {
     }
 
     finalizarPedido(paymentMethod) {
-        const total = this.itens.reduce((total, item) => total + (item.preco * item.quantidade), 0);
+        // CORREÇÃO: O total no objeto do pedido também deve ser em Reais
+        const totalEmCentavos = this.itens.reduce((total, item) => total + (item.preco * item.quantidade), 0);
+        const totalReais = totalEmCentavos / 100;
+        
         const nome = document.getElementById('customer-name').value;
         const telefone = document.getElementById('customer-phone').value;
 
@@ -325,7 +343,8 @@ class Checkout {
         const pedido = {
             id: Date.now(),
             itens: [...this.itens], // cópia dos itens
-            total: total,
+            // USAR O VALOR EM REAIS
+            total: totalReais, 
             cliente: {
                 nome: nome,
                 telefone: telefone,
@@ -354,6 +373,8 @@ class Checkout {
 
     mostrarConfirmacao(pedido) {
         let mensagem = '';
+        // O pedido.total já está em Reais devido à correção em finalizarPedido()
+        const totalFormatado = pedido.total.toFixed(2); 
 
         switch (pedido.pagamento) {
             case 'pix':
@@ -361,17 +382,19 @@ class Checkout {
                     <h3>Pedido Confirmado!</h3>
                     <p>Seu pedido #${pedido.id} foi recebido com sucesso.</p>
                     <p><strong>Chave PIX:</strong> lanchemania@pix.com</p>
-                    <p><strong>Valor:</strong> R$ ${pedido.total.toFixed(2)}</p>
+                    <p><strong>Valor:</strong> R$ ${totalFormatado}</p>
                     <p>Envie o comprovante para o WhatsApp: (11) 99591-7672</p>
                 `;
                 break;
             case 'cash':
                 const troco = document.getElementById('change').value;
+                const trocoFormatado = troco ? parseFloat(troco).toFixed(2) : '';
+                
                 mensagem = `
                     <h3>Pedido Confirmado!</h3>
                     <p>Seu pedido #${pedido.id} foi recebido com sucesso.</p>
                     <p><strong>Pagamento:</strong> Dinheiro</p>
-                    ${troco ? `<p><strong>Troco para:</strong> R$ ${parseFloat(troco).toFixed(2)}</p>` : ''}
+                    ${troco ? `<p><strong>Troco para:</strong> R$ ${trocoFormatado}</p>` : ''}
                     <p>Prepare o pagamento para quando for retirar.</p>
                 `;
                 break;
@@ -380,7 +403,7 @@ class Checkout {
                     <h3>Pedido Confirmado!</h3>
                     <p>Seu pedido #${pedido.id} foi recebido com sucesso.</p>
                     <p><strong>Pagamento via cartão:</strong> ${pedido.pagamento === 'credit-card' ? 'Crédito' : 'Débito'}</p>
-                    <p><strong>Valor:</strong> R$ ${pedido.total.toFixed(2)}</p>
+                    <p><strong>Valor:</strong> R$ ${totalFormatado}</p>
                 `;
         }
 

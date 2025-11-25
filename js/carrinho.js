@@ -2,7 +2,8 @@
 window.Carrinho = class Carrinho {
     constructor() {
         this.itens = JSON.parse(localStorage.getItem('carrinho')) || [];
-        this.taxaEntrega = 5.00;
+        // CORREÇÃO: Taxa de entrega removida/zerada para que Total = Subtotal
+        this.taxaEntrega = 0.00; 
         this.init();
     }
 
@@ -144,7 +145,9 @@ window.Carrinho = class Carrinho {
         corpoTabela.innerHTML = '';
 
         this.itens.forEach((item, index) => {
-            const subtotal = item.preco * item.quantidade;
+            // CORREÇÃO: item.preco está em centavos.
+            const precoUnitarioReais = item.preco / 100; 
+            const subtotalReais = (item.preco * item.quantidade) / 100;
             const linha = document.createElement('tr');
 
             linha.innerHTML = `
@@ -154,7 +157,9 @@ window.Carrinho = class Carrinho {
                         <span>${item.nome}</span>
                     </div>
                 </td>
-                <td>R$ ${item.preco.toFixed(2)}</td>
+                
+                <td>R$ ${precoUnitarioReais.toFixed(2)}</td> 
+                
                 <td>
                     <div class="controle-quantidade">
                         <button class="quantidade-btn" onclick="carrinho.alterarQuantidade(${index}, -1)">
@@ -167,7 +172,9 @@ window.Carrinho = class Carrinho {
                         </button>
                     </div>
                 </td>
-                <td>R$ ${subtotal.toFixed(2)}</td>
+                
+                <td>R$ ${subtotalReais.toFixed(2)}</td>
+                
                 <td>
                     <button class="remover-btn" onclick="carrinho.removerItem(${index})">
                         <i class="fa-solid fa-trash"></i>
@@ -227,6 +234,8 @@ window.Carrinho = class Carrinho {
 
         const subtotalElement = document.getElementById('subtotal');
         const totalElement = document.getElementById('total');
+        // Elemento da taxa de entrega (pode ser removido do HTML)
+        const taxaEntregaElement = document.getElementById('taxa-entrega'); 
 
         console.log('Elementos encontrados:', {
             subtotal: !!subtotalElement,
@@ -238,13 +247,24 @@ window.Carrinho = class Carrinho {
             return;
         }
 
-        const subtotal = this.itens.reduce((total, item) => total + (item.preco * item.quantidade), 0);
-        const total = subtotal;
-        console.log('Valores calculados:', { subtotal, total });
+        // Calcula o subtotal em centavos e DIVIDE por 100
+        const subtotalEmCentavos = this.itens.reduce((total, item) => total + (item.preco * item.quantidade), 0);
+        const subtotalReais = subtotalEmCentavos / 100;
+        
+        // O total agora é igual ao subtotal, pois a taxa é 0.
+        const totalReais = subtotalReais; 
+        
+        console.log('Valores calculados:', { subtotalReais, totalReais });
 
         // Formatar para o padrão brasileiro
-        subtotalElement.textContent = `R$ ${subtotal.toFixed(2)}`;
-        totalElement.textContent = `R$ ${total.toFixed(2)}`;
+        subtotalElement.textContent = `R$ ${subtotalReais.toFixed(2)}`;
+        totalElement.textContent = `R$ ${totalReais.toFixed(2)}`;
+        
+        // CORREÇÃO: Remove a exibição da taxa de entrega, se o elemento existir.
+        if (taxaEntregaElement) {
+            // Pode ser útil para debug, mas no HTML você deve remover a linha da taxa
+            taxaEntregaElement.textContent = `R$ 0.00`; 
+        }
 
         console.log('Resumo atualizado com sucesso');
     }

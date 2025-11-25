@@ -25,7 +25,7 @@ async function carregarProdutos() {
             tr.innerHTML = `
                 <td>${p.id}</td>
                 <td>${p.title || p.titulo || "-"}</td>
-                <td>R$ ${(p.price || p.preco || 0).toFixed(2)}</td>
+                <td>R$ ${((p.price || p.preco || 0)/100).toFixed(2)}</td>
                 <td style="text-align:center; font-weight:bold;">
                     <button class="btn-qtde menos" onclick="mudarQtde(${p.id}, -1)">−</button>
                     <span id="qtde-${p.id}" class="${qtdeAtual === 0 ? 'zero' : 'positivo'}">

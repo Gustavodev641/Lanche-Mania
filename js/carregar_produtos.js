@@ -174,7 +174,7 @@ function mostrarErroConexao() {
     }
 }
 
-// Função placeholder para o carrinho (assume que você tem essa função em carrinho.js)
+
 function adicionarProduto(botao) {
     const produto = {
         id: botao.dataset.id,
@@ -183,10 +183,13 @@ function adicionarProduto(botao) {
         preco: parseInt(botao.dataset.preco), 
         imagem: botao.dataset.imagem
     };
-    if (typeof adicionarAoCarrinho === 'function') {
-        adicionarAoCarrinho(produto);
+    
+
+    if (window.carrinho && typeof window.carrinho.adicionarItem === 'function') {
+        window.carrinho.adicionarItem(produto);
     } else {
-        console.error("Função 'adicionarAoCarrinho' não encontrada. Verifique carrinho.js");
+        console.error("Instância 'carrinho' ou método 'adicionarItem' não encontrados. Verifique a ordem de carregamento dos scripts e carrinho.js.");
+        alert("Erro: Serviço de carrinho indisponível.");
     }
 }
 
