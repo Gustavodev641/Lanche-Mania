@@ -6,7 +6,7 @@
     <title>Cadastro de Produto Admin</title>
     <link rel="stylesheet" href="../css/cadastro_produtos.css">
     
-    </head>
+</head>
 <body>
 
 <section id="admin-section">
@@ -14,7 +14,7 @@
         
         <div class="card">
             <h2>Cadastro de Produto</h2>
-
+            
             <label for="produtoTitulo">Nome do Produto</label>
             <input type="text" id="produtoTitulo" placeholder="Ex: X-Burguer">
 
@@ -23,9 +23,21 @@
             
             <label for="produtoQuantidade">Quantidade</label>
             <input type="number" id="produtoQuantidade" placeholder="Ex: 50" min="0"> 
-
+            
             <label for="produtoImg">URL da Imagem</label>
             <input type="text" id="produtoImg" placeholder="Cole o link da imagem">
+
+            <label for="produtoDescricao">Descrição</label>
+            <textarea id="produtoDescricao" rows="3" placeholder="Ingredientes e detalhes do produto..."></textarea>
+            
+            <label for="produtoCategoria">Categoria</label>
+            <select id="produtoCategoria">
+                <option value="">Selecione a Categoria</option>
+                <option value="salgado">Salgado</option>
+                <option value="lanche">Lanche</option>
+                <option value="bebida">Bebida</option>
+                <option value="doce">Doce</option>
+            </select>
 
             <button id="btnCadastrar">Cadastrar Produto</button>
             

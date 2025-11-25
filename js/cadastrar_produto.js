@@ -1,27 +1,43 @@
-
 const btnCadastrar = document.getElementById('btnCadastrar');
 const inputTitulo = document.getElementById('produtoTitulo');
 const inputPreco = document.getElementById('produtoPreco');
+const inputQuantidade = document.getElementById('produtoQuantidade'); // NOVO: Campo Quantidade
 const inputImg = document.getElementById('produtoImg');
+const inputDescricao = document.getElementById('produtoDescricao'); // NOVO: Campo Descrição
+const inputCategoria = document.getElementById('produtoCategoria'); // NOVO: Campo Categoria
 
 const ENDPOINT_CADASTRO = 'http://localhost:8080/food'; 
 
 btnCadastrar.addEventListener('click', async () => {
+    // 1. Coletar e normalizar todos os dados
     const titulo = inputTitulo.value.trim();
-    
-    const preco = parseInt(inputPreco.value); 
-    
+    const precoFloat = parseFloat(inputPreco.value);
     const imagemUrl = inputImg.value.trim();
+    const descricao = inputDescricao.value.trim();
+    const categoria = inputCategoria.value;
+    const qtdeInt = parseInt(inputQuantidade.value);
 
+    // 2. Mapear Preço para o formato do Backend (Centavos)
+    // O backend espera um Integer, então multiplicamos por 100 (centavos)
+    const precoEmCentavos = Math.round(precoFloat * 100); 
 
-    if (!titulo || isNaN(preco) || preco <= 0 || !imagemUrl) {
-        alert('Por favor, preencha todos os campos corretamente com valores inteiros para o preço.');
+    // 3. Validação dos campos obrigatórios
+    if (!titulo || isNaN(precoFloat) || precoFloat <= 0 || 
+        !imagemUrl || isNaN(qtdeInt) || qtdeInt < 0 || 
+        !categoria) { // A categoria agora é obrigatória para evitar o 'null'
+        
+        alert('Por favor, preencha todos os campos obrigatórios (Título, Preço (>0), URL, Quantidade (>=0) e Categoria).');
         return;
     }
+    
+    // 4. Preparar o Payload com todos os campos
     const dadosProduto = {
         title: titulo,      
-        price: preco,     
-        image: imagemUrl    
+        price: precoEmCentavos, // Enviado em centavos
+        image: imagemUrl,
+        qtde: qtdeInt,           // Novo campo
+        description: descricao,  // Novo campo
+        category: categoria      // Novo campo
     };
 
     try {
@@ -35,10 +51,15 @@ btnCadastrar.addEventListener('click', async () => {
 
         if (response.ok) {
             alert(`Produto "${titulo}" cadastrado com sucesso!`);
-            // Limpa os campos após o sucesso
+            
+            // 5. Limpa todos os campos após o sucesso
             inputTitulo.value = '';
             inputPreco.value = '';
+            inputQuantidade.value = '';
             inputImg.value = '';
+            inputDescricao.value = '';
+            inputCategoria.value = ''; // Limpa a seleção
+            
         } else {
             // Tenta ler a mensagem de erro do backend
             let erro;

@@ -1,145 +1,76 @@
-let carrinhoInstancia = null;
 
-function getCarrinho() {
-    if (!carrinhoInstancia && typeof Carrinho !== 'undefined') {
-        carrinhoInstancia = new Carrinho();
-    }
-    return carrinhoInstancia;
-}
-
-// FUNÇÃO PARA VERIFICAR SE O USUÁRIO ESTÁ LOGADO
-function verificarLogin() {
-    const isLoggedIn = localStorage.getItem('isLoggedIn');
-    
-    if (!isLoggedIn || isLoggedIn !== 'true') {
-        // Usar showNotification se disponível, senão usar alert
-        if (typeof showNotification === 'function') {
-            showNotification('Faça login para adicionar itens', 'error');
-        } else {
-            alert('Faça login para adicionar');
+// Função para limpar todos os containers de produtos
+function limparContainers() {
+    Object.values(CATEGORIAS_MAP).forEach(containerId => {
+        const container = document.getElementById(containerId);
+        if (container) {
+            container.innerHTML = '';
         }
-        
-        // Redirecionar para login após 2 segundos
-        setTimeout(() => {
-            window.location.href = '../pages/login.html';
-        }, 2000);
-        
-        return false;
-    }
-    
-    return true;
-}
-
-function adicionarAoCarrinho(produto) {
-    console.log('Adicionando ao carrinho:', produto);
-    
-    // VERIFICAR LOGIN ANTES DE ADICIONAR
-    if (!verificarLogin()) {
-        return false; // Impede a adição se não estiver logado
-    }
-    
-    const carrinho = getCarrinho();
-    if (carrinho) {
-        carrinho.adicionarItem(produto);
-    } else {
-        console.error('Carrinho não disponível');
-        // Fallback: salvar diretamente no localStorage
-        salvarItemDiretamente(produto);
-        alert('Produto adicionado ao carrinho!');
-    }
-    return true;
-}
-
-// Fallback caso o carrinho.js não carregue
-function salvarItemDiretamente(produto) {
-    try {
-        const carrinhoAtual = JSON.parse(localStorage.getItem('carrinho')) || [];
-        
-        const itemExistente = carrinhoAtual.find(item => item.id === produto.id);
-        
-        if (itemExistente) {
-            itemExistente.quantidade += 1;
-        } else {
-            carrinhoAtual.push({
-                ...produto,
-                quantidade: 1
-            });
-        }
-        
-        localStorage.setItem('carrinho', JSON.stringify(carrinhoAtual));
-        console.log('Item salvo diretamente no localStorage');
-        
-        // Atualizar contador visualmente
-        atualizarContadorManual();
-        
-    } catch (error) {
-        console.error('Erro ao salvar item:', error);
-    }
-}
-
-function atualizarContadorManual() {
-    try {
-        const carrinhoAtual = JSON.parse(localStorage.getItem('carrinho')) || [];
-        const totalItens = carrinhoAtual.reduce((total, item) => total + item.quantidade, 0);
-        
-        const carrinhoCount = document.getElementById('carrinho_count');
-        const mobileCarrinhoCount = document.getElementById('mobile_carrinho_count');
-        
-        if (carrinhoCount) {
-            carrinhoCount.textContent = totalItens;
-            carrinhoCount.style.display = totalItens > 0 ? 'flex' : 'none';
-        }
-        if (mobileCarrinhoCount) {
-            mobileCarrinhoCount.textContent = totalItens;
-        }
-    } catch (error) {
-        console.error('Erro ao atualizar contador:', error);
-    }
-}
-
-// Inicializar contador quando a página carregar
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('Cardápio carregado');
-    atualizarContadorManual();
-    
-    // Tentar inicializar o carrinho se estiver disponível
-    if (typeof Carrinho !== 'undefined' && !carrinhoInstancia) {
-        carrinhoInstancia = new Carrinho();
-    }
-});
-
-// Função para navegação por categorias - VERSÃO SIMPLIFICADA
-function filtrarCategoria(categoria) {
-    // Remove a classe active de todos os botões
-    document.querySelectorAll('.category-btn').forEach(btn => {
-        btn.classList.remove('active');
     });
+    // Ocultar todas as seções por padrão
+    document.querySelectorAll('.category-section').forEach(section => {
+        section.style.display = 'none';
+    });
+}
 
-    // Adiciona a classe active ao botão clicado
-    event.target.classList.add('active');
+// Função para carregar produtos do backend
+async function carregarProdutos() {
+    limparContainers(); 
 
-    // Encontra a seção correspondente
-    const elemento = document.getElementById(categoria);
-    
-    if (elemento) {
-        // Rolagem suave
-        elemento.scrollIntoView({ 
-            behavior: 'smooth',
-            block: 'start'
+    try {
+        console.log('Carregando produtos do banco de dados...');
+        
+        const response = await fetch(BASE_URL);
+        
+        if (!response.ok) {
+            throw new Error(`Erro HTTP: ${response.status}`);
+        }
+        
+        const produtos = await response.json();
+        console.log('Produtos carregados:', produtos);
+        
+        if (produtos.length === 0) {
+            mostrarMensagemVazio();
+            return;
+        }
+
+        // 1. Agrupar e renderizar
+        produtos.forEach(produto => {
+            // NORMALIZAÇÃO CRÍTICA: Converte para minúscula e trata null/undefined
+            const categoriaNormalizada = (produto.category || '').toLowerCase(); 
+            
+            // Tenta obter o ID do container usando a categoria normalizada
+            const containerId = CATEGORIAS_MAP[categoriaNormalizada];
+            
+            if (containerId) {
+                const container = document.getElementById(containerId);
+                if (container) {
+                    container.innerHTML += criarProdutoHTML(produto);
+                }
+            } else {
+                // Mensagem de debug no console para identificar categorias não mapeadas
+                console.warn(`[ERRO DE MAPA] Produto "${produto.title}" (ID: ${produto.id}) tem categoria: "${produto.category}". Não há container mapeado para "${categoriaNormalizada}".`);
+            }
         });
+        
+        // 2. Exibir apenas as seções que contêm produtos
+        Object.values(CATEGORIAS_MAP).forEach(containerId => {
+            const container = document.getElementById(containerId);
+            const section = container ? container.closest('.category-section') : null;
+
+            if (container && container.children.length > 0 && section) {
+                section.style.display = 'block'; // Mostra a seção se tiver produtos
+            } else if (section) {
+                section.style.display = 'none'; // Oculta a seção se estiver vazia
+            }
+        });
+
+        console.log('Produtos renderizados com sucesso!');
+        
+    } catch (error) {
+        // ... (Mostrar erro de conexão)
+        console.error('Erro ao carregar produtos:', error);
+        mostrarErroConexao();
     }
 }
 
-function adicionarProduto(botao) {
-    const id = botao.dataset.id;
-    const nome = botao.dataset.nome;
-    const preco = parseFloat(botao.dataset.preco);
-    const imagem = botao.dataset.imagem;
-
-    adicionarAoCarrinho({
-        id: id,
-        nome: nome,
-        preco: preco,
-        imagem: imagem
-    });
-}
